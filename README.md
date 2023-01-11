@@ -1,5 +1,5 @@
 # MCVIDEO2 - NEW UPDATED WITH ALL BLOCKS = MORE COLORS
-[Video](https://www.youtube.com/watch?v=KN-YvopMdOs)
+[Video from older version](https://www.youtube.com/watch?v=KN-YvopMdOs)
 
 ![](https://i.imgur.com/AZUGe8f.png)
 
