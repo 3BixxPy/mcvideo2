@@ -196,7 +196,7 @@ for frame, name in enumerate(listdir(directory)):
             # get block name from block_palette dictionary
             block_name = block_palette.get(closest_color)
 
-            command = f"execute at @e[type=minecraft:armor_stand,tag=pos] run setblock ^{x} ^{y} ^ {block_name}\n"
+            command = f"execute at @e[type=minecraft:armor_stand,tag=pos] run setblock ^{x} ^ ^{y} {block_name}\n"
 
             if frame >= 1:
                 # if pixel has changed use command, else don't use command
