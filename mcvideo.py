@@ -36,6 +36,15 @@ def block_types(string):
         raise InvalidBlockTypes
 
 
+# checks existence of resampling filter
+def resampling_filter(string):
+    if string in ["nearest", "bicubic", "bilinear"]:
+        return string
+    else:
+        print("invalid resampling filter: nearest bicubic bilinear")
+        raise InvalidBlockTypes
+
+
 # argument stuff
 
 parser = argparse.ArgumentParser()
@@ -49,6 +58,8 @@ mcvideo.add_argument("resolution", type=int, help="select your resolution, the r
 mcvideo.add_argument("--blocktypes", nargs="+", type=block_types, help="chooses which blocks to include, use: glowing "
                                                                        "/ glass / falling, you can use more than one")
 mcvideo.add_argument("--showframes", type=bool, help="show current frame in window, use: true/false")
+mcvideo.add_argument("--resample", type=resampling_filter, help="can yield better results try to play with this, "
+                                                                "usage: nearest or bicubic or bilinear") 
 framegen.add_argument("path", type=video_path, help=r"path to your video, use: C:\example\Video.mp4")
 args = parser.parse_args()
 
@@ -56,6 +67,9 @@ args = parser.parse_args()
 resolution = 0
 directory = ""
 show_frames = False
+NEAREST = False
+BICUBIC = False
+BILINEAR = False
 if args.command == "mcvideo":
 
     directory = args.path
@@ -69,7 +83,16 @@ if args.command == "mcvideo":
                 block_palette.update(glass)
             elif argument == "falling":
                 block_palette.update(falling)
-
+    
+    if args.resample:
+        for argument in args.resample:
+            if argument == "nearest":
+                NEAREST = True
+            if argument == "bilinear":
+                BILINEAR = True
+            if argument == "bicubic":
+                BICUBIC = True
+                
     if args.showframes:
         show_frames = args.showframes
 
@@ -100,7 +123,12 @@ def closest(colors, color):
 def resize(im, new_width, im_x, im_y):
     ratio = im_y / im_x
     new_height = int(new_width * ratio)
-    result = im.resize((new_width, new_height))
+    if BILINEAR:
+        result = im.resize((new_width, new_height), resample=Image.BILINEAR)
+    elif BICUBIC:
+        result = im.resize((new_width, new_height), resample=Image.BICUBIC)
+    else:
+        result = im.resize((new_width, new_height), resample=Image.NEAREST)
     return result
 
 
@@ -128,7 +156,7 @@ cache_palette = {}
 
 # for each frame
 for frame, name in enumerate(listdir(directory)):
-    #try to open image
+    # try to open image
     try:
         image = Image.open(f"{directory}\{name}")
     except Exception as e:
@@ -145,7 +173,7 @@ for frame, name in enumerate(listdir(directory)):
     tick_command = ""
     pixel_count = 0
 
-    #for every pixel in current image
+    # for every pixel in current image
     for y in range(img_y):
         for x in range(img_x):
             r, g, b, = pix[x, y]
@@ -161,7 +189,7 @@ for frame, name in enumerate(listdir(directory)):
             else:
                 closest_color = cache_palette.get(im_color_cache)
 
-            #if show frames update the pixels on current image for showing
+            # if show frames update the pixels on current image for showing
             if show_frames:
                 resized_image.putpixel((x, y), closest_color)
 
