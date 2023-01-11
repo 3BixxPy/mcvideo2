@@ -288,6 +288,13 @@ def generate_datapack():
         f.write("function mcvideo_stuff:reset_video\n"
                 "tag @e[tag=pos] add run_fps")
         f.close()
+        
+    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\set_pos.mcfunction",
+              "w") as f:
+        f.write("kill @e[tag=pos,type=armor_stand]\n"
+                "execute at @s run summon minecraft:armor_stand ~ ~ ~ {Tags:[pos],NoGravity:1b}\n"
+                "execute at @e[tag=pos,type=armor_stand] run tp @e[tag=pos,type=armor_stand] ~ ~ ~ -180 90")
+        f.close()
 
     with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\tick.mcfunction", "w") as f:
         f.write("execute if entity @e[tag=pos,tag=run_fps] run scoreboard players add fps_tick fps_tick 1\n"
