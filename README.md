@@ -24,7 +24,6 @@
  
 - in minecraft Reload the datapack ```/reload```
 - you will need to set a position for the video with ```/function minecraft_video:set_pos```
-- Set the video speed ```/scoreboard players set fps fps X``` X can be any whole number from 1
 - Then start the video with ```/function minecraft_video:start_video```
 - Use ```/function minecraft_video:pause_video``` to pause and ```/function minecraft_video:reset_video``` to reset
 - ```/execute at @e[tag=pos] run tp @e[tag=pos] ~ ~ ~ Xrot Yrot``` to rotate the video
