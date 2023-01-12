@@ -124,12 +124,12 @@ def closest(colors, color):
 def resize(im, new_width, im_x, im_y):
     ratio = im_y / im_x
     new_height = int(new_width * ratio)
-    if BILINEAR:
-        result = im.resize((new_width, new_height), resample=Image.BILINEAR)
+    if NEAREST:
+        result = im.resize((new_width, new_height), resample=Image.NEAREST)
     elif BICUBIC:
         result = im.resize((new_width, new_height), resample=Image.BICUBIC)
     else:
-        result = im.resize((new_width, new_height), resample=Image.NEAREST)
+        result = im.resize((new_width, new_height), resample=Image.BILINEAR)
     return result
 
 
