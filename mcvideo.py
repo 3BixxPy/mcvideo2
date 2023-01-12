@@ -98,6 +98,7 @@ if args.command == "mcvideo":
 
 # if generating frames
 elif args.command == "framegen":
+    print("generating frames")
     make_frames(args.path)
     exit()
 
