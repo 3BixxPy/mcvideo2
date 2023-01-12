@@ -9,6 +9,7 @@
 - install python, watch this tutorial [here](https://www.youtube.com/watch?v=Kn1HF3oD19c)
 - first download by clicking the green "<> code" and selecting zip or use git
 - cd to your extracted folder containing everything with `cd C:\downloads\example\mcvideo2` in Command Prompt and follow these next steps
+- then do `pip install -r requirements.txt`
 - you will need to generate your video frames for that use `py mcvideo.py framegen C:\example\Video.mp4` now your frames should be located in videoname_frames \
 **pro tip: if you want just an image just put your image in a folder and use that**
 - for the main part of generating the minecraft video itself use this command `py mcvideo.py mcvideo C:\example\Video_Frames 80`
