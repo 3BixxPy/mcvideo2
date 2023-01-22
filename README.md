@@ -30,7 +30,7 @@
 
 # Test Video
 
-- datapack_output\test video.rar
+- datapack_output\1\test video.rar
 - extract this to your datapack folder
 
 
