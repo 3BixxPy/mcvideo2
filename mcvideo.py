@@ -85,13 +85,12 @@ if args.command == "mcvideo":
                 block_palette.update(falling)
     
     if args.resample:
-        for argument in args.resample:
-            if argument == "nearest":
-                NEAREST = True
-            if argument == "bilinear":
-                BILINEAR = True
-            if argument == "bicubic":
-                BICUBIC = True
+        if args.resample == "nearest":
+            NEAREST = True
+        if args.resample == "bilinear":
+            BILINEAR = True
+        if args.resample == "bicubic":
+            BICUBIC = True
                 
     if args.showframes:
         show_frames = args.showframes
@@ -155,12 +154,18 @@ commands_cache = []
 # cache for each color pair, so it can find the closest color faster
 cache_palette = {}
 
-# for each frame
-for frame, name in enumerate(listdir(directory)):
+invalid_detected = False
+
+for frame, name in enumerate(listdir(directory)):  
+    if invalid_detected:
+        invalid_detected = False
+        frame += -1
+        
     # try to open image
     try:
         image = Image.open(f"{directory}\{name}")
     except Exception as e:
+        invalid_detected = True
         print("please add a correct path to your video frames")
         print(e)
         continue
