@@ -3,7 +3,7 @@ from time import perf_counter
 import cv2
 from PIL import Image
 from numpy import array, sqrt, amin, where, sum
-from extras import block_palette, falling, glass, glowing, generate_datapack, make_frames
+from extras import block_palette, falling, transparent, glowing, generate_datapack, make_frames
 import argparse
 
 
@@ -29,10 +29,10 @@ class InvalidBlockTypes(Exception):
 
 # checks existence of set block types
 def block_types(string):
-    if string in ["glowing", "glass", "falling"]:
+    if string in ["glowing", "transparent", "falling"]:
         return string
     else:
-        print("invalid block type: use glowing glass falling")
+        print("invalid block type: use glowing transparent falling")
         raise InvalidBlockTypes
 
 
@@ -56,7 +56,7 @@ mcvideo.add_argument("path", type=dir_path, help=r"path to your video frames, us
 mcvideo.add_argument("resolution", type=int, help="select your resolution, the recommended resolution is blow 100, "
                                                   "use: number")
 mcvideo.add_argument("--blocktypes", nargs="+", type=block_types, help="chooses which blocks to include, use: glowing "
-                                                                       "/ glass / falling, you can use more than one")
+                                                                       "/ transparent / falling, you can use more than one")
 mcvideo.add_argument("--showframes", type=bool, help="show current frame in window, use: true/false")
 mcvideo.add_argument("--resample", type=resampling_filter, help="can yield better results try to play with this, "
                                                                 "usage: nearest or bicubic or bilinear") 
@@ -79,8 +79,8 @@ if args.command == "mcvideo":
         for argument in args.blocktypes:
             if argument == "glowing":
                 block_palette.update(glowing)
-            elif argument == "glass":
-                block_palette.update(glass)
+            elif argument == "transparent":
+                block_palette.update(transparent)
             elif argument == "falling":
                 block_palette.update(falling)
     
