@@ -33,9 +33,10 @@
 - datapack_output\1\test video.rar
 - extract this to your datapack folder
 
-# IF BUGS
+# IF ERRORS
 
 - clear datapacks_output
+- and use png only!
 
 
 ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png) ![](https://i.imgur.com/kpiN2vE.png)
