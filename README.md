@@ -15,7 +15,7 @@
 - for the main part of generating the minecraft video itself use this command `py mcvideo.py mcvideo C:\example\Video_Frames 80`
 80 is for the resolution use anything above 1, but i dont recommend using something larger than 100
   - OPTIONAL PARAMETERS: usage `py mcvideo.py mcvideo C:\example\Video_Frames 80 --resample bicubic --blocktypes falling`
-    - --blocktypes - what blocks to include, glowing glass falling choose up to 3 `--blocktypes glowing glass`
+    - --blocktypes - what blocks to include, glowing glass falling choose up to 3 `--blocktypes glowing glass falling`
     - --showframes - shows current frame, true or false `--showframes true`
     - --resample - can yield better results try one of these, nearest bicubic bilinear `--resample bicubic`
 - and finally run, the datapack will be stored in datapack_output/number put whats inside in your datapacks folder
