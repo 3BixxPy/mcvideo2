@@ -3,7 +3,7 @@ from time import perf_counter
 import cv2
 from PIL import Image
 from numpy import array, sqrt, amin, where, sum
-from extras import block_palette, falling, transparent, glowing, generate_datapack, make_frames
+from extras import block_palette, falling, transparent, glowing, generate_datapack, make_frames, calculate_average_time
 import argparse
 
 
@@ -139,16 +139,16 @@ pack_name = generate_datapack()
 # generates all the mcfunctions based on input
 def generate_mcfunction(frame_, commands_, tick_command_):
     # frame_functions
-    with open(fr"datapack_output\{pack_name}\mcvideo2\data\mcvideo_stuff\functions\frame_functions\{frame_}.mcfunction",
+    with open(fr"datapack_output\{pack_name}\mcvideo2_{pack_name}\data\mcvideo_stuff{pack_name}\functions\frame_functions\{frame_}.mcfunction",
               "w") as f:
         f.write(commands_)
         f.close()
     # tick2
-    with open(fr"datapack_output\{pack_name}\mcvideo2\data\mcvideo_stuff\functions\tick2.mcfunction", "a") as f:
+    with open(fr"datapack_output\{pack_name}\mcvideo2_{pack_name}\data\mcvideo_stuff{pack_name}\functions\tick2.mcfunction", "a") as f:
         f.write(tick_command_)
         f.close()
 
-
+process_times = []
 # cache for each pixel command later used for detecting if the pixel changed, this saves space
 commands_cache = []
 # cache for each color pair, so it can find the closest color faster
@@ -202,7 +202,7 @@ for frame, name in enumerate(listdir(directory)):
             # get block name from block_palette dictionary
             block_name = block_palette.get(closest_color)
 
-            command = f"execute at @e[type=minecraft:armor_stand,tag=pos] run setblock ^{x} ^ ^{y} {block_name}\n"
+            command = f"execute at @e[type=minecraft:armor_stand,tag=pos{pack_name}] run setblock ^{x} ^ ^{y} {block_name}\n"
 
             if frame >= 1:
                 # if pixel has changed use command, else don't use command
@@ -217,8 +217,8 @@ for frame, name in enumerate(listdir(directory)):
             pixel_count += 1
 
     # tick2 command used to initiate the frame
-    tick_command = "execute if score fps_count fps_count matches " \
-                   f"{frame} run function mcvideo_stuff:frame_functions/{frame}\n"
+    tick_command = f"execute if score frame_count frame_count{pack_name} matches " \
+                   f"{frame} run function mcvideo_stuff{pack_name}:frame_functions/{frame}\n"
 
     # generates mcfunctions for both tick2 and frame_functions
     generate_mcfunction(frame, commands, tick_command)
@@ -231,7 +231,13 @@ for frame, name in enumerate(listdir(directory)):
         cv2.setWindowTitle("FRAME", f"FRAME{frame}")
         cv2.waitKey(1)
 
-    # prints the process time of a frame in seconds
-    print(f"frame {frame}/{len(listdir(directory))}: {round(perf_counter() - start, 2)}s")
+    # estimate time
+    process_times.append(round(perf_counter() - start, 2))
+    average_time = calculate_average_time(process_times)
+    time_remaining = round((sum(process_times) + len(listdir(directory)) - frame) * average_time, 2)
 
-print(f"exported to datapack_output {pack_name}/{len(listdir(directory))}")
+    space = " "
+    pad = f" Frame {frame}/{len(listdir(directory))}: {round(perf_counter() - start, 2)}s"
+    print(fr"{pad.ljust(20+4,space)}|   time remaining: {time_remaining}s")
+
+print(f"\n exported to datapack_output as {pack_name} | {len(listdir(directory))}frames")

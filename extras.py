@@ -238,13 +238,17 @@ def generate_datapack():
         makedirs(r"datapack_output\1")
     else:
         for name in listdir(r"datapack_output"):
-            pack_name = int(name)
+            pack_name = int(name) + 1
 
-    makedirs(fr"datapack_output\{pack_name + 1}\mcvideo2\data\minecraft\tags\functions")
-    makedirs(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions")
-    makedirs(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\frame_functions")
+    datapack_paths = [fr"datapack_output\{pack_name}\mcvideo2_{pack_name}\data\\",
+                      fr"datapack_output\{pack_name}\mcvideo2_{pack_name}\data\mcvideo_stuff{pack_name}\functions\\",
+                      fr"datapack_output\{pack_name}\mcvideo2_{pack_name}\data\minecraft\tags\functions\\"]
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\pack.mcmeta", "w") as f:
+    makedirs(fr"{datapack_paths[0]}minecraft\tags\functions")
+    makedirs(fr"{datapack_paths[0]}mcvideo_stuff{pack_name}\functions")
+    makedirs(fr"{datapack_paths[1]}frame_functions")
+
+    with open(fr"datapack_output\{pack_name}\mcvideo2_{pack_name}\pack.mcmeta", "w") as f:
         f.write("""{
     "pack": {
         "pack_format": 10,
@@ -252,66 +256,68 @@ def generate_datapack():
     }
 }""")
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\minecraft\tags\functions\load.json", "w") as f:
+    with open(fr"{datapack_paths[2]}load.json", "w") as f:
         f.write("""{
     "values": [
-        "mcvideo_stuff:load"
+        "mcvideo_stuff""" + str(pack_name) + """:load"
     ]
 }""")
         f.close()
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\minecraft\tags\functions\tick.json", "w") as f:
+    with open(fr"{datapack_paths[2]}tick.json", "w") as f:
         f.write("""{
     "values": [
-        "mcvideo_stuff:tick",
-        "mcvideo_stuff:tick2"
+        "mcvideo_stuff""" + str(pack_name) + """:tick",
+        "mcvideo_stuff""" + str(pack_name) + """:tick2"
     ]
 }""")
         f.close()
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\load.mcfunction", "w") as f:
-        f.write("say loaded\n"
-                "scoreboard objectives add fps_tick dummy\n"
-                "scoreboard objectives add fps_count dummy\n"
-                "scoreboard objectives add fps dummy\n"
-                "scoreboard players set fps fps 1\n")
+    load_message = "say loaded"
+
+    with open(fr"{datapack_paths[1]}load.mcfunction", "w") as f:
+        f.write(f"{load_message}\n"
+                f"scoreboard objectives add video_tick{pack_name} dummy\n"
+                f"scoreboard objectives add frame_count{pack_name} dummy\n"
+                f"scoreboard objectives add fps{pack_name} dummy\n"
+                f"scoreboard players set fps fps{pack_name} 1\n")
         f.close()
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\pause_video.mcfunction",
+    with open(fr"{datapack_paths[1]}pause_video.mcfunction",
               "w") as f:
-        f.write("tag @e[tag=pos] remove run_fps")
+        f.write(f"tag @e[tag=pos{pack_name}] remove run_video{pack_name}")
         f.close()
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\reset_video.mcfunction",
+    with open(fr"{datapack_paths[1]}reset_video.mcfunction",
               "w") as f:
-        f.write("tag @e[tag=pos] remove run_fps\n"
-                "scoreboard players reset fps_count fps_count\n"
-                "function mcvideo_stuff:frame_functions/0")
+        f.write(f"tag @e[tag=pos{pack_name}] remove run_video{pack_name}\n"
+                f"scoreboard players reset frame_count frame_count{pack_name}\n"
+                f"function mcvideo_stuff{pack_name}:frame_functions/0")
         f.close()
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\start_video.mcfunction",
+    with open(fr"{datapack_paths[1]}start_video.mcfunction",
               "w") as f:
-        f.write("function mcvideo_stuff:reset_video\n"
-                "tag @e[tag=pos] add run_fps")
+        f.write(f"function mcvideo_stuff{pack_name}:reset_video\n"
+                f"tag @e[tag=pos{pack_name}] add run_video{pack_name}")
         f.close()
         
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\set_pos.mcfunction",
+    with open(fr"{datapack_paths[1]}set_pos.mcfunction",
               "w") as f:
-        f.write("kill @e[tag=pos,type=armor_stand]\n"
-                "execute at @s run summon minecraft:armor_stand ~ ~ ~ {Tags:[pos],NoGravity:1b}\n"
-                "execute at @e[tag=pos,type=armor_stand] run tp @e[tag=pos,type=armor_stand] ~ ~ ~ -180 90")
+        f.write(f"kill @e[tag=pos{pack_name},type=armor_stand]\n"
+                "execute at @s run summon minecraft:armor_stand ~ ~ ~ {Tags:[pos" + f"{pack_name}" + "],NoGravity:1b}\n"
+                f"execute at @e[tag=pos{pack_name},type=armor_stand] run tp @e[tag=pos{pack_name},type=armor_stand] ~ ~ ~ -180 90")
         f.close()
 
-    with open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\tick.mcfunction", "w") as f:
-        f.write("execute if entity @e[tag=pos,tag=run_fps] run scoreboard players add fps_tick fps_tick 1\n"
-                "execute if score fps_tick fps_tick >= fps fps run scoreboard players add fps_count fps_count 1\n"
-                "execute if score fps_tick fps_tick >= fps fps run scoreboard players set fps_tick fps_tick 0\n")
+    with open(fr"{datapack_paths[1]}tick.mcfunction", "w") as f:
+        f.write(f"execute if entity @e[tag=pos{pack_name},tag=run_video{pack_name}] run scoreboard players add video_tick video_tick{pack_name} 1\n"
+                f"execute if score video_tick video_tick{pack_name} >= fps fps{pack_name} run scoreboard players add frame_count frame_count{pack_name} 1\n"
+                f"execute if score video_tick video_tick{pack_name} >= fps fps{pack_name} run scoreboard players set video_tick video_tick{pack_name} 0\n")
         f.close()
 
-    tick2 = open(fr"datapack_output\{pack_name + 1}\mcvideo2\data\mcvideo_stuff\functions\tick2.mcfunction", "w")
+    tick2 = open(fr"{datapack_paths[1]}tick2.mcfunction", "w")
     tick2.close()
 
-    return pack_name + 1
+    return pack_name
 
 
 SAVING_FRAMES_PER_SECOND = 20
@@ -387,3 +393,12 @@ def make_frames(video_file):
                 pass
         # increment the frame count
         count += 1
+
+
+
+def calculate_average_time(numbers):
+    if not numbers:
+        return None  # To handle an empty list
+    total_sum = sum(numbers)
+    average = total_sum / len(numbers)
+    return average
